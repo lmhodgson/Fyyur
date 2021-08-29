@@ -91,12 +91,12 @@ def search_venues():
     search_term = request.form.get('search_term', '')
 
     # ilike makes the search case-insensitive
-    venue_data = Venue.query.filter(Venue.name.ilike(f'%{search_term}%')).all()
+    venue_results = Venue.query.filter(Venue.name.ilike(f'%{search_term}%')).all()
 
     data = []
     current_time = datetime.datetime.now()
 
-    for venue in venue_data:
+    for venue in venue_results:
         upcoming_shows = Show.query.filter_by(venue_id=venue.id).filter(Show.start_time > current_time).all()
 
         data.append({
@@ -106,7 +106,7 @@ def search_venues():
         })
 
     response_data = {
-        "count": len(venue_data),
+        "count": len(venue_results),
         "data": data
     }
     return render_template('pages/search_venues.html', results=response_data,
@@ -216,12 +216,12 @@ def search_artists():
     search_term = request.form.get('search_term', '')
 
     # ilike makes the search case-insensitive
-    artist_data = Artist.query.filter(Artist.name.ilike(f'%{search_term}%')).all()
+    artist_results = Artist.query.filter(Artist.name.ilike(f'%{search_term}%')).all()
 
     data = []
     current_time = datetime.datetime.now()
 
-    for artist in artist_data:
+    for artist in artist_results:
         upcoming_shows = Show.query.filter_by(artist_id=artist.id).filter(Show.start_time > current_time).all()
 
         data.append({
@@ -231,7 +231,7 @@ def search_artists():
         })
 
     response_data = {
-        "count": len(artist_data),
+        "count": len(artist_results),
         "data": data
     }
 
