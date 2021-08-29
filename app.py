@@ -62,7 +62,7 @@ def index():
 def venues():
     data = []
 
-    venue_locations = Venue.query.group_by(Venue.state, Venue.city).all()
+    venue_locations = db.session.query(Venue.city, Venue.state).group_by(Venue.state, Venue.city).all()
     current_time = datetime.datetime.now()
 
     for location in venue_locations:
@@ -105,26 +105,60 @@ def search_venues():
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
+    venue = Venue.query.get(venue_id)
 
+    # If no venue has been returned then return a 404 error
+    if not venue:
+        return render_template('errors/404.html')
 
-    data2 = {
-        "id": 2,
-        "name": "The Dueling Pianos Bar",
-        "genres": ["Classical", "R&B", "Hip-Hop"],
-        "address": "335 Delancey Street",
-        "city": "New York",
-        "state": "NY",
-        "phone": "914-003-1132",
-        "website": "https://www.theduelingpianos.com",
-        "facebook_link": "https://www.facebook.com/theduelingpianos",
-        "seeking_talent": False,
-        "image_link": "https://images.unsplash.com/photo-1497032205916-ac775f0649ae?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=750&q=80",
-        "past_shows": [],
-        "upcoming_shows": [],
-        "past_shows_count": 0,
-        "upcoming_shows_count": 0,
+    current_time = datetime.datetime.now()
+
+    upcoming_shows_data = Show.query.filter_by(venue_id=venue.id).filter(Show.start_time > current_time).all()
+    upcoming_shows = []
+
+    for upcoming_show in upcoming_shows_data:
+        upcoming_shows.append({
+            'artist_id': upcoming_show.venue_id,
+            'artist_name': upcoming_show.venue.name,
+            'artist_image_link': upcoming_show.venue.image_link,
+            'start_time': upcoming_show.start_time
+        })
+
+    past_shows_data = Show.query.filter_by(venue_id=venue.id).filter(Show.start_time <= current_time).all()
+    past_shows = []
+
+    for past_show in past_shows_data:
+        past_shows.append({
+            'artist_id': past_show.venue_id,
+            'artist_name': past_show.venue.name,
+            'artist_image_link': past_show.venue.image_link,
+            'start_time': past_show.start_time
+        })
+
+    genres = []
+    for genre in venue.genres:
+        genres.append(genre.name)
+
+    data = {
+        'id': venue.id,
+        'name': venue.name,
+        'genres': genres,
+        'address': venue.address,
+        'city': venue.city,
+        'state': venue.state,
+        'phone': venue.phone,
+        'website': venue.website,
+        'facebook_link': venue.facebook_link,
+        'seeking_talent': venue.seeking_talent,
+        'seeking_description': venue.seeking_description,
+        'image_link': venue.image_link,
+        'past_shows': past_shows,
+        'upcoming_shows': upcoming_shows,
+        'past_shows_count': len(past_shows),
+        'upcoming_shows_count': len(upcoming_shows)
     }
-    return render_template('pages/show_venue.html', venue=data2)
+
+    return render_template('pages/show_venue.html', venue=data)
 
 
 #  Create Venue
