@@ -69,43 +69,17 @@ def venues():
         venue_data = []
 
         for venue in location_venues:
-            venue_name = venue.name
-            venue_id = venue.id
-
-            upcoming_shows = (Show.query.filter_by(venue_id=venue_id).filter(Show.start_time > current_time).all())
+            upcoming_shows = Show.query.filter_by(venue_id=venue.id).filter(Show.start_time > current_time).all()
 
             venue_data.append({
-                "id": venue_id,
-                "name": venue_name,
+                "id": venue.id,
+                "name": venue.name,
                 "num_upcoming_shows": len(upcoming_shows),
             })
 
         data.append({"city": city, "state": state, "venues": venue_data})
 
     return render_template('pages/venues.html', areas=data)
-
-
-        # data = [{
-        #     "city": "San Francisco",
-        #     "state": "CA",
-        #     "venues": [{
-        #         "id": 1,
-        #         "name": "The Musical Hop",
-        #         "num_upcoming_shows": 0,
-        #     }, {
-        #         "id": 3,
-        #         "name": "Park Square Live Music & Coffee",
-        #         "num_upcoming_shows": 1,
-        #     }]
-        # }, {
-        #     "city": "New York",
-        #     "state": "NY",
-        #     "venues": [{
-        #         "id": 2,
-        #         "name": "The Dueling Pianos Bar",
-        #         "num_upcoming_shows": 0,
-        #     }]
-        # }]
 
 
 @app.route('/venues/search', methods=['POST'])
