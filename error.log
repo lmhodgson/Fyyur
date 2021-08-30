@@ -1336,3 +1336,16 @@
 2021-08-30 17:31:22,870 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:658]
 2021-08-30 17:40:30,293 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:656]
 2021-08-30 17:48:04,634 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:695]
+2021-08-30 17:54:08,534 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:697]
+2021-08-30 18:12:27,680 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:712]
+2021-08-30 18:14:13,539 ERROR: Class 'builtins.NoneType' is not mapped [in D:\Programming\Nanodegree\Fyyur\app.py:350]
+2021-08-30 18:18:41,993 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:712]
+2021-08-30 18:20:16,779 ERROR: (psycopg2.errors.NotNullViolation) null value in column "venue_id" of relation "Show" violates not-null constraint
+DETAIL:  Failing row contains (5, 2, null, 2021-10-30 18:18:41).
+
+[SQL: UPDATE "Show" SET venue_id=%(venue_id)s WHERE "Show".id = %(Show_id)s]
+[parameters: {'venue_id': None, 'Show_id': 5}]
+(Background on this error at: https://sqlalche.me/e/14/gkpj) [in D:\Programming\Nanodegree\Fyyur\app.py:350]
+2021-08-30 18:22:17,797 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:712]
+2021-08-30 18:22:46,830 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:712]
+2021-08-30 18:23:40,242 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:712]

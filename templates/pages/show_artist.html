@@ -73,6 +73,23 @@
 </section>
 
 <a href="/artists/{{ artist.id }}/edit"><button class="btn btn-primary btn-lg">Edit</button></a>
+<button id="btnDeleteArtist" class="btn btn-danger btn-lg" data-id="{{artist.id}}">Delete</button>
+
+<script>
+	document.getElementById('btnDeleteArtist').addEventListener('click', (event) => {
+		var artistId = event.currentTarget.dataset['id'];
+
+		fetch('/artists/' + artistId, {
+			method: 'DELETE'
+		}).then(response => {
+			// If the method returns a 301 response then follow the HTTP redirect response
+			if (response.redirected) {
+				window.location.href = response.url;
+			}
+		});
+	});
+</script>
+
 
 {% endblock %}
 
