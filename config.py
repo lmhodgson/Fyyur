@@ -1,4 +1,5 @@
 import os
+import logging
 
 SECRET_KEY = os.urandom(32)
 # Grabs the folder where the script runs.

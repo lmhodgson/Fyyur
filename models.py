@@ -1,4 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
+from sqlalchemy.sql import func
 
 db = SQLAlchemy()
 
@@ -18,6 +19,7 @@ class Venue(db.Model):
     seeking_description = db.Column(db.String(300))
     genres = db.relationship("Genre", secondary="VenueGenre", backref="venue_genre", lazy=True)
     shows = db.relationship('Show', backref='venue', lazy=True)
+    created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 
 class Artist(db.Model):
@@ -34,12 +36,12 @@ class Artist(db.Model):
     seeking_description = db.Column(db.String(300))
     genres = db.relationship("Genre", secondary="ArtistGenre", backref="artist_genre", lazy=True)
     shows = db.relationship('Show', backref='artist', lazy=True)
+    created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 
 class Show(db.Model):
     __tablename__ = 'Show'
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), nullable=False)
     artist_id = db.Column(db.Integer, db.ForeignKey("Artist.id", ondelete='CASCADE'), primary_key=True)
     venue_id = db.Column(db.Integer, db.ForeignKey("Venue.id", ondelete='CASCADE'), primary_key=True)
     start_time = db.Column(db.DateTime, nullable=False)
@@ -48,7 +50,7 @@ class Show(db.Model):
 class Genre(db.Model):
     __tablename__ = "Genre"
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120))
+    name = db.Column(db.String(120), unique=True, nullable=False)
 
 
 class ArtistGenre(db.Model):
