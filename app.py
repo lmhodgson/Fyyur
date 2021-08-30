@@ -54,7 +54,24 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 @app.route('/')
 def index():
-    return render_template('pages/home.html')
+    error = False
+    recent_venues = []
+    recent_artists = []
+
+    try:
+        # Get the 10 most recently listed venues
+        recent_venues = Venue.query.order_by(db.desc(Venue.created_date)).limit(10).all()
+
+        # Get the 10 most recently listed artists
+        recent_artists = Artist.query.order_by(db.desc(Artist.created_date)).limit(10).all()
+    except Exception as ex:
+        error = True
+        app.logger.error(ex)
+
+    if error:
+        flash('Something went wrong!')
+
+    return render_template('pages/home.html', recent_venues=recent_venues, recent_artists=recent_artists)
 
 
 #  Venues
