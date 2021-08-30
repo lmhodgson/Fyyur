@@ -62,9 +62,9 @@ def index():
 
         # Get the 10 most recently listed artists
         recent_artists = Artist.query.order_by(db.desc(Artist.created_date)).limit(10).all()
-    except Exception as ex:
+    except:
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
 
     if error:
         flash('Something went wrong!')
@@ -138,9 +138,9 @@ def search_venues():
             "count": len(venue_results),
             "data": data
         }
-    except Exception as ex:
+    except:
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
 
     if error:
         flash('Something went wrong!')
@@ -207,9 +207,9 @@ def show_venue(venue_id):
             'past_shows_count': len(past_shows),
             'upcoming_shows_count': len(upcoming_shows)
         }
-    except Exception as ex:
+    except:
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
 
     if error:
         flash('Something went wrong!')
@@ -259,10 +259,10 @@ def create_venue_submission():
 
         db.session.add(venue)
         db.session.commit()
-    except Exception as ex:
+    except:
         error = True
         db.session.rollback()
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
     finally:
         db.session.close()
 
@@ -337,10 +337,10 @@ def edit_venue_submission(venue_id):
                 venue.genres.append(new_genre)
 
         db.session.commit()
-    except Exception as ex:
+    except:
         error = True
         db.session.rollback()
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
     finally:
         db.session.close()
 
@@ -365,10 +365,10 @@ def delete_venue(venue_id):
 
         db.session.delete(venue)
         db.session.commit()
-    except Exception as ex:
+    except:
         db.session.rollback()
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
     finally:
         db.session.close()
 
@@ -416,9 +416,9 @@ def search_artists():
             "count": len(artist_results),
             "data": data
         }
-    except Exception as ex:
+    except:
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
 
     if error:
         flash('Something went wrong!')
@@ -484,9 +484,9 @@ def show_artist(artist_id):
             'past_shows_count': len(past_shows),
             'upcoming_shows_count': len(upcoming_shows)
         }
-    except Exception as ex:
+    except:
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
 
     if error:
         flash('Something went wrong!')
@@ -535,10 +535,10 @@ def create_artist_submission():
 
         db.session.add(artist)
         db.session.commit()
-    except Exception as ex:
+    except:
         error = True
         db.session.rollback()
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
     finally:
         db.session.close()
 
@@ -573,8 +573,8 @@ def edit_artist(artist_id):
         form.genres.data = [genre.name for genre in artist.genres]
 
         return render_template('forms/edit_artist.html', form=form, artist=artist)
-    except Exception as ex:
-        app.logger.error(ex)
+    except:
+        app.logger.error(sys.exc_info())
         return render_template('errors/500.html')
 
 
@@ -611,10 +611,10 @@ def edit_artist_submission(artist_id):
                 artist.genres.append(new_genre)
 
         db.session.commit()
-    except Exception as ex:
+    except:
         error = True
         db.session.rollback()
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
     finally:
         db.session.close()
 
@@ -639,10 +639,10 @@ def delete_artist(artist_id):
 
         db.session.delete(artist)
         db.session.commit()
-    except Exception as ex:
+    except:
         db.session.rollback()
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
     finally:
         db.session.close()
 
@@ -674,9 +674,9 @@ def shows():
                 'artist_image_link': show.artist.image_link,
                 'start_time': show.start_time
             })
-    except Exception as ex:
+    except:
         error = True
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
 
     if error:
         flash('Something went wrong!')
@@ -704,10 +704,10 @@ def create_show_submission():
 
         db.session.add(show)
         db.session.commit()
-    except Exception as ex:
+    except:
         error = True
         db.session.rollback()
-        app.logger.error(ex)
+        app.logger.error(sys.exc_info())
     finally:
         db.session.close()
 
