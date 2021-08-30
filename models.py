@@ -5,8 +5,6 @@ db = SQLAlchemy()
 
 
 # TODO: Add the ability to delete venues or artists that then cascade to show
-# TODO: Show Recent Listed Artists and Recently Listed Venues on the homepage,
-#  returning results for Artists and Venues sorting by newly created. Limit to the 10 most recently listed items.
 # TODO: Showcase what albums and songs an artist has on the Artist’s page.
 # TODO: Verify criteria on readme and rubric
 class Venue(db.Model):
