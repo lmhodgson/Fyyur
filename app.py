@@ -306,6 +306,7 @@ def edit_venue_submission(venue_id):
         venue.seeking_description = request.form['seeking_description']
 
         genres = request.form.getlist('genres')
+        venue.genres = []
 
         for genre in genres:
             # Try to get a genre from the database
@@ -580,6 +581,7 @@ def edit_artist_submission(artist_id):
         artist.seeking_description = request.form['seeking_description']
 
         genres = request.form.getlist('genres')
+        artist.genres = []
 
         for genre in genres:
             # Try to get a genre from the database
