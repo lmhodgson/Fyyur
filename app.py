@@ -123,9 +123,9 @@ def search_venues():
             "count": len(venue_results),
             "data": data
         }
-    except:
+    except Exception as ex:
         error = True
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
 
     if error:
         flash('Something went wrong!')
@@ -192,9 +192,9 @@ def show_venue(venue_id):
             'past_shows_count': len(past_shows),
             'upcoming_shows_count': len(upcoming_shows)
         }
-    except:
+    except Exception as ex:
         error = True
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
 
     if error:
         flash('Something went wrong!')
@@ -244,10 +244,10 @@ def create_venue_submission():
 
         db.session.add(venue)
         db.session.commit()
-    except:
+    except Exception as ex:
         error = True
         db.session.rollback()
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
     finally:
         db.session.close()
 
@@ -270,21 +270,18 @@ def edit_venue(venue_id):
         if not venue:
             return render_template('errors/404.html')
 
-        # venue = {
-        #     "id": 1,
-        #     "name": "The Musical Hop",
-        #     "genres": ["Jazz", "Reggae", "Swing", "Classical", "Folk"],
-        #     "address": "1015 Folsom Street",
-        #     "city": "San Francisco",
-        #     "state": "CA",
-        #     "phone": "123-123-1234",
-        #     "website": "https://www.themusicalhop.com",
-        #     "facebook_link": "https://www.facebook.com/TheMusicalHop",
-        #     "seeking_talent": True,
-        #     "seeking_description": "We are on the lookout for a local artist to play every two weeks. Please call us.",
-        #     "image_link": "https://images.unsplash.com/photo-1543900694-133f37abaaa5?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=400&q=60"
-        # }
-        # TODO: populate form with values from venue with ID <venue_id>
+        form.name.data = venue.name
+        form.city.data = venue.city
+        form.state.data = venue.state
+        form.address.data = venue.address
+        form.phone.data = venue.phone
+        form.image_link.data = venue.image_link
+        form.facebook_link.data = venue.facebook_link
+        form.website_link.data = venue.website
+        form.seeking_talent.data = venue.seeking_talent
+        form.seeking_description.data = venue.seeking_description
+        form.genres.data = [genre.name for genre in venue.genres]
+
         return render_template('forms/edit_venue.html', form=form, venue=venue)
     except:
         app.logger.error(sys.exc_info())
@@ -293,8 +290,49 @@ def edit_venue(venue_id):
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
-    # TODO: take values from the form submitted, and update existing
-    # venue record with ID <venue_id> using the new attributes
+    error = False
+    try:
+        venue = Venue.query.get(venue_id)
+
+        venue.name = request.form['name']
+        venue.city = request.form['city']
+        venue.state = request.form['state']
+        venue.address = request.form['address']
+        venue.phone = request.form['phone']
+        venue.image_link = request.form['image_link']
+        venue.facebook_link = request.form['facebook_link']
+        venue.website = request.form['website_link']
+        venue.seeking_talent = True if 'seeking_talent' in request.form else False
+        venue.seeking_description = request.form['seeking_description']
+
+        genres = request.form.getlist('genres')
+
+        for genre in genres:
+            # Try to get a genre from the database
+            genre_data = Genre.query.filter_by(name=genre).first()
+            if genre_data:
+                # If there is a genre in the database, append it to the list
+                venue.genres.append(genre_data)
+
+            else:
+                # This genre is not in the database, so create it
+                new_genre = Genre(name=genre)
+                db.session.add(new_genre)
+                venue.genres.append(new_genre)
+
+        db.session.commit()
+    except Exception as ex:
+        error = True
+        db.session.rollback()
+        app.logger.error(ex)
+    finally:
+        db.session.close()
+
+    if error:
+        flash('An error occurred. Venue ' + request.form['name'] + ' could not be updated.')
+    if not error:
+        flash('Venue ' + request.form['name'] + ' was successfully updated!')
+
     return redirect(url_for('show_venue', venue_id=venue_id))
 
 
@@ -305,10 +343,10 @@ def delete_venue(venue_id):
         venue = Venue.query.get(venue_id)
         db.session.delete(venue)
         db.session.commit()
-    except:
+    except Exception as ex:
         db.session.rollback()
         error = True
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
     finally:
         db.session.close()
 
@@ -363,9 +401,9 @@ def search_artists():
             "count": len(artist_results),
             "data": data
         }
-    except:
+    except Exception as ex:
         error = True
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
 
     if error:
         flash('Something went wrong!')
@@ -431,9 +469,9 @@ def show_artist(artist_id):
             'past_shows_count': len(past_shows),
             'upcoming_shows_count': len(upcoming_shows)
         }
-    except:
+    except Exception as ex:
         error = True
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
 
     if error:
         flash('Something went wrong!')
@@ -482,10 +520,10 @@ def create_artist_submission():
 
         db.session.add(artist)
         db.session.commit()
-    except:
+    except Exception as ex:
         error = True
         db.session.rollback()
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
     finally:
         db.session.close()
 
@@ -499,28 +537,75 @@ def create_artist_submission():
 
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
-    form = ArtistForm()
-    artist = {
-        "id": 4,
-        "name": "Guns N Petals",
-        "genres": ["Rock n Roll"],
-        "city": "San Francisco",
-        "state": "CA",
-        "phone": "326-123-5000",
-        "website": "https://www.gunsnpetalsband.com",
-        "facebook_link": "https://www.facebook.com/GunsNPetals",
-        "seeking_venue": True,
-        "seeking_description": "Looking for shows to perform at in the San Francisco Bay Area!",
-        "image_link": "https://images.unsplash.com/photo-1549213783-8284d0336c4f?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=crop&w=300&q=80"
-    }
-    # TODO: populate form with fields from artist with ID <artist_id>
-    return render_template('forms/edit_artist.html', form=form, artist=artist)
+    try:
+        form = ArtistForm()
+
+        artist = Artist.query.get(artist_id)
+
+        # If no artist has been returned then return a 404 error
+        if not artist:
+            return render_template('errors/404.html')
+
+        form.name.data = artist.name
+        form.city.data = artist.city
+        form.state.data = artist.state
+        form.phone.data = artist.phone
+        form.image_link.data = artist.image_link
+        form.facebook_link.data = artist.facebook_link
+        form.website_link.data = artist.website
+        form.seeking_venue.data = artist.seeking_venue
+        form.seeking_description.data = artist.seeking_description
+        form.genres.data = [genre.name for genre in artist.genres]
+
+        return render_template('forms/edit_artist.html', form=form, artist=artist)
+    except Exception as ex:
+        app.logger.error(ex)
+        return render_template('errors/500.html')
 
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
-    # TODO: take values from the form submitted, and update existing
-    # artist record with ID <artist_id> using the new attributes
+    error = False
+    try:
+        artist = Artist.query.get(artist_id)
+
+        artist.name = request.form['name']
+        artist.city = request.form['city']
+        artist.state = request.form['state']
+        artist.phone = request.form['phone']
+        artist.image_link = request.form['image_link']
+        artist.facebook_link = request.form['facebook_link']
+        artist.website = request.form['website_link']
+        artist.seeking_venue = True if 'seeking_venue' in request.form else False
+        artist.seeking_description = request.form['seeking_description']
+
+        genres = request.form.getlist('genres')
+
+        for genre in genres:
+            # Try to get a genre from the database
+            genre_data = Genre.query.filter_by(name=genre).first()
+            if genre_data:
+                # If there is a genre in the database, append it to the list
+                artist.genres.append(genre_data)
+
+            else:
+                # This genre is not in the database, so create it
+                new_genre = Genre(name=genre)
+                db.session.add(new_genre)
+                artist.genres.append(new_genre)
+
+        db.session.commit()
+    except Exception as ex:
+        error = True
+        db.session.rollback()
+        app.logger.error(ex)
+    finally:
+        db.session.close()
+
+    if error:
+        flash('An error occurred. Artist ' + request.form['name'] + ' could not be updated.')
+    if not error:
+        flash('Artist ' + request.form['name'] + ' was successfully updated!')
 
     return redirect(url_for('show_artist', artist_id=artist_id))
 
@@ -545,9 +630,9 @@ def shows():
                 'artist_image_link': show.artist.image_link,
                 'start_time': show.start_time
             })
-    except:
+    except Exception as ex:
         error = True
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
 
     if error:
         flash('Something went wrong!')
@@ -575,10 +660,10 @@ def create_show_submission():
 
         db.session.add(show)
         db.session.commit()
-    except:
+    except Exception as ex:
         error = True
         db.session.rollback()
-        app.logger.error(sys.exc_info())
+        app.logger.error(ex)
     finally:
         db.session.close()
 
