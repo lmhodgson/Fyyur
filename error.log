@@ -1358,3 +1358,8 @@ DETAIL:  Failing row contains (5, 2, null, 2021-10-30 18:18:41).
 2021-08-30 19:50:15,014 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:729]
 2021-08-30 19:52:36,884 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:729]
 2021-08-30 19:54:14,872 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:729]
+2021-08-30 20:03:09,497 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:727]
+2021-08-30 20:11:18,460 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:727]
+2021-08-30 20:11:57,495 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:727]
+2021-08-30 20:16:24,206 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:739]
+2021-08-30 20:17:00,927 INFO: errors [in D:\Programming\Nanodegree\Fyyur\app.py:739]

@@ -4,8 +4,8 @@ from sqlalchemy.sql import func
 db = SQLAlchemy()
 
 
-# TODO: Add the ability to delete venues or artists that then cascade to show
 # TODO: Showcase what albums and songs an artist has on the Artist’s page.
+# TODO: Check phone number validation.
 # TODO: Verify criteria on readme and rubric
 class Venue(db.Model):
     __tablename__ = 'Venue'
@@ -21,7 +21,7 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(300))
     genres = db.relationship("Genre", secondary="VenueGenre", backref="venue_genre", lazy=True)
-    shows = db.relationship('Show', backref='venue', lazy=True)
+    shows = db.relationship('Show', backref='venue', lazy=True, cascade="all, delete")
     created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 
@@ -38,7 +38,7 @@ class Artist(db.Model):
     seeking_venue = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(300))
     genres = db.relationship("Genre", secondary="ArtistGenre", backref="artist_genre", lazy=True)
-    shows = db.relationship('Show', backref='artist', lazy=True)
+    shows = db.relationship('Show', backref='artist', lazy=True, cascade="all, delete")
     created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 

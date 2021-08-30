@@ -355,8 +355,14 @@ def edit_venue_submission(venue_id):
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
     error = False
+    venue_name = ""
+
     try:
         venue = Venue.query.get(venue_id)
+
+        # Set the name to a variable so it can be used in the flash message.
+        venue_name = venue.name
+
         db.session.delete(venue)
         db.session.commit()
     except Exception as ex:
@@ -367,9 +373,9 @@ def delete_venue(venue_id):
         db.session.close()
 
     if error:
-        flash('An error occurred. Venue could not be deleted.')
+        flash('An error occurred. Venue ' + venue_name + ' could not be deleted.')
     if not error:
-        flash('Venue was successfully deleted!')
+        flash('Venue ' + venue_name + ' was successfully deleted!')
 
     return redirect(url_for('index'))
 
@@ -623,8 +629,14 @@ def edit_artist_submission(artist_id):
 @app.route('/artists/<artist_id>', methods=['DELETE'])
 def delete_artist(artist_id):
     error = False
+    artist_name = ""
+
     try:
         artist = Artist.query.get(artist_id)
+
+        # Set the name to a variable so it can be used in the flash message.
+        artist_name = artist.name
+
         db.session.delete(artist)
         db.session.commit()
     except Exception as ex:
@@ -635,9 +647,9 @@ def delete_artist(artist_id):
         db.session.close()
 
     if error:
-        flash('An error occurred. Artist could not be deleted.')
+        flash('An error occurred. Artist ' + artist_name + ' could not be deleted.')
     if not error:
-        flash('Artist was successfully deleted!')
+        flash('Artist ' + artist_name + ' was successfully deleted!')
 
     return redirect(url_for('index'))
 
