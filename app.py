@@ -81,14 +81,18 @@ def venues():
     data = []
 
     try:
+        # Get all the distinct state and city combinations
         venue_locations = db.session.query(Venue.city, Venue.state).group_by(Venue.state, Venue.city).all()
+
         current_time = datetime.datetime.now()
 
         for location in venue_locations:
             city = location[0]
             state = location[1]
 
+            # Get the venues for this city and state
             location_venues = Venue.query.filter_by(city=city, state=state).all()
+            
             venue_data = []
 
             for venue in location_venues:
