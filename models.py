@@ -4,9 +4,6 @@ from sqlalchemy.sql import func
 db = SQLAlchemy()
 
 
-# TODO: Showcase what albums and songs an artist has on the Artist’s page.
-# TODO: Check phone number validation.
-# TODO: Verify criteria on readme and rubric
 class Venue(db.Model):
     __tablename__ = 'Venue'
     id = db.Column(db.Integer, primary_key=True)
