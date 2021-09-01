@@ -158,60 +158,36 @@ def show_venue(venue_id):
     data = {}
 
     try:
-        venue = Venue.query.get(venue_id)
+        venue = Venue.query.get_or_404(venue_id)
 
-        # If no venue has been returned then return a 404 error
-        if not venue:
-            return render_template('errors/404.html')
-
-        current_time = datetime.now()
-
-        upcoming_shows_data = Show.query.filter_by(venue_id=venue.id)\
-            .filter(Show.start_time > current_time).all()
+        past_shows = []
         upcoming_shows = []
 
-        for upcoming_show in upcoming_shows_data:
-            upcoming_shows.append({
-                'artist_id': upcoming_show.venue_id,
-                'artist_name': upcoming_show.venue.name,
-                'artist_image_link': upcoming_show.venue.image_link,
-                'start_time': upcoming_show.start_time
-            })
+        for show in venue.shows:
+            temp_show = {
+                'artist_id': show.artist_id,
+                'artist_name': show.artist.name,
+                'artist_image_link': show.artist.image_link,
+                'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+            }
+            if show.start_time <= datetime.now():
+                past_shows.append(temp_show)
+            else:
+                upcoming_shows.append(temp_show)
 
-        past_shows_data = Show.query.filter_by(venue_id=venue.id)\
-            .filter(Show.start_time <= current_time).all()
-        past_shows = []
+        # object class to dict
+        data = vars(venue)
 
-        for past_show in past_shows_data:
-            past_shows.append({
-                'artist_id': past_show.venue_id,
-                'artist_name': past_show.venue.name,
-                'artist_image_link': past_show.venue.image_link,
-                'start_time': past_show.start_time
-            })
+        data['past_shows'] = past_shows
+        data['upcoming_shows'] = upcoming_shows
+        data['past_shows_count'] = len(past_shows)
+        data['upcoming_shows_count'] = len(upcoming_shows)
 
         genres = []
         for genre in venue.genres:
             genres.append(genre.name)
 
-        data = {
-            'id': venue.id,
-            'name': venue.name,
-            'genres': genres,
-            'address': venue.address,
-            'city': venue.city,
-            'state': venue.state,
-            'phone': venue.phone,
-            'website': venue.website,
-            'facebook_link': venue.facebook_link,
-            'seeking_talent': venue.seeking_talent,
-            'seeking_description': venue.seeking_description,
-            'image_link': venue.image_link,
-            'past_shows': past_shows,
-            'upcoming_shows': upcoming_shows,
-            'past_shows_count': len(past_shows),
-            'upcoming_shows_count': len(upcoming_shows)
-        }
+        data['genres'] = genres
     except:
         error = True
         app.logger.error(sys.exc_info())
@@ -447,59 +423,37 @@ def show_artist(artist_id):
     data = {}
 
     try:
-        artist = Artist.query.get(artist_id)
+        artist = Artist.query.get_or_404(artist_id)
 
-        # If no artist has been returned then return a 404 error
-        if not artist:
-            return render_template('errors/404.html')
-
-        current_time = datetime.datetime.now()
-
-        upcoming_shows_data = Show.query.filter_by(artist_id=artist.id)\
-            .filter(Show.start_time > current_time).all()
+        past_shows = []
         upcoming_shows = []
 
-        for upcoming_show in upcoming_shows_data:
-            upcoming_shows.append({
-                'venue_id': upcoming_show.venue_id,
-                'venue_name': upcoming_show.venue.name,
-                'venue_image_link': upcoming_show.venue.image_link,
-                'start_time': upcoming_show.start_time
-            })
+        for show in artist.shows:
+            temp_show = {
+                'venue_id': show.venue_id,
+                'venue_name': show.venue.name,
+                'venue_image_link': show.venue.image_link,
+                'start_time': show.start_time.strftime("%m/%d/%Y, %H:%M")
+            }
+            if show.start_time <= datetime.now():
+                past_shows.append(temp_show)
+            else:
+                upcoming_shows.append(temp_show)
 
-        past_shows_data = Show.query.filter_by(artist_id=artist.id)\
-            .filter(Show.start_time <= current_time).all()
-        past_shows = []
+        # object class to dict
+        data = vars(artist)
 
-        for past_show in past_shows_data:
-            past_shows.append({
-                'venue_id': past_show.venue_id,
-                'venue_name': past_show.venue.name,
-                'venue_image_link': past_show.venue.image_link,
-                'start_time': past_show.start_time
-            })
+        data['past_shows'] = past_shows
+        data['upcoming_shows'] = upcoming_shows
+        data['past_shows_count'] = len(past_shows)
+        data['upcoming_shows_count'] = len(upcoming_shows)
 
         genres = []
         for genre in artist.genres:
             genres.append(genre.name)
 
-        data = {
-            'id': artist.id,
-            'name': artist.name,
-            'genres': genres,
-            'city': artist.city,
-            'state': artist.state,
-            'phone': artist.phone,
-            'website': artist.website,
-            'facebook_link': artist.facebook_link,
-            'seeking_venue': artist.seeking_venue,
-            'seeking_description': artist.seeking_description,
-            'image_link': artist.image_link,
-            'past_shows': past_shows,
-            'upcoming_shows': upcoming_shows,
-            'past_shows_count': len(past_shows),
-            'upcoming_shows_count': len(upcoming_shows)
-        }
+        data['genres'] = genres
+
     except:
         error = True
         app.logger.error(sys.exc_info())

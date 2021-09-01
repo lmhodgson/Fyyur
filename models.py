@@ -18,7 +18,8 @@ class Venue(db.Model):
     seeking_talent = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(300))
     genres = db.relationship("Genre", secondary="VenueGenre", backref="venue_genre", lazy=True)
-    shows = db.relationship('Show', backref='venue', lazy=True, cascade="all, delete")
+    shows = db.relationship('Show', backref='venue', lazy='joined',
+                            cascade="all, delete")
     created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 
@@ -35,7 +36,8 @@ class Artist(db.Model):
     seeking_venue = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(300))
     genres = db.relationship("Genre", secondary="ArtistGenre", backref="artist_genre", lazy=True)
-    shows = db.relationship('Show', backref='artist', lazy=True, cascade="all, delete")
+    shows = db.relationship('Show', backref='artist', lazy='joined',
+                            cascade="all, delete")
     created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 
