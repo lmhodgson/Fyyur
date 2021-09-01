@@ -2,6 +2,7 @@
 # Imports
 # ---------------------------------------------------------------------#
 import sys
+import ast
 
 import dateutil.parser
 import babel
@@ -242,6 +243,7 @@ def edit_venue(venue_id):
         venue = Venue.query.get_or_404(venue_id)
 
         form = VenueForm(obj=venue)
+        form.genres.data = ast.literal_eval(form.genres.data)
 
         return render_template('forms/edit_venue.html', form=form, venue=venue)
     except:
