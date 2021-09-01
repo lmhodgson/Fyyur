@@ -5,7 +5,7 @@ db = SQLAlchemy()
 
 
 class Venue(db.Model):
-    __tablename__ = 'Venue'
+    __tablename__ = 'venue'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     city = db.Column(db.String(120))
@@ -14,17 +14,17 @@ class Venue(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-    website = db.Column(db.String(120))
+    website_link = db.Column(db.String(120))
     seeking_talent = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(300))
-    genres = db.relationship("Genre", secondary="VenueGenre", backref="venue_genre", lazy=True)
+    genres = db.Column(db.String(120))
     shows = db.relationship('Show', backref='venue', lazy='joined',
                             cascade="all, delete")
     created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 
 class Artist(db.Model):
-    __tablename__ = 'Artist'
+    __tablename__ = 'artist'
     id = db.Column(db.Integer, primary_key=True)
     name = db.Column(db.String, nullable=False)
     city = db.Column(db.String(120))
@@ -32,36 +32,19 @@ class Artist(db.Model):
     phone = db.Column(db.String(120))
     image_link = db.Column(db.String(500))
     facebook_link = db.Column(db.String(120))
-    website = db.Column(db.String(120))
+    website_link = db.Column(db.String(120))
     seeking_venue = db.Column(db.Boolean, default=False)
     seeking_description = db.Column(db.String(300))
-    genres = db.relationship("Genre", secondary="ArtistGenre", backref="artist_genre", lazy=True)
-    shows = db.relationship('Show', backref='artist', lazy='joined',
+    genres = db.Column(db.String(120))
+    shows = db.relationship('show', backref='artist', lazy='joined',
                             cascade="all, delete")
     created_date = db.Column(db.DateTime, nullable=False, default=func.now())
 
 
 class Show(db.Model):
-    __tablename__ = 'Show'
+    __tablename__ = 'show'
     id = db.Column(db.Integer, primary_key=True)
-    artist_id = db.Column(db.Integer, db.ForeignKey("Artist.id", ondelete='CASCADE'), nullable=False)
-    venue_id = db.Column(db.Integer, db.ForeignKey("Venue.id", ondelete='CASCADE'), nullable=False)
+    artist_id = db.Column(db.Integer,
+                          db.ForeignKey("artist.id"), nullable=False)
+    venue_id = db.Column(db.Integer, db.ForeignKey("venue.id"), nullable=False)
     start_time = db.Column(db.DateTime, nullable=False)
-
-
-class Genre(db.Model):
-    __tablename__ = "Genre"
-    id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(120), unique=True, nullable=False)
-
-
-class ArtistGenre(db.Model):
-    __tablename__ = "ArtistGenre"
-    artist_id = db.Column(db.Integer, db.ForeignKey("Artist.id", ondelete='CASCADE'), primary_key=True)
-    genre_id = db.Column(db.Integer, db.ForeignKey("Genre.id", ondelete='CASCADE'), primary_key=True)
-
-
-class VenueGenre(db.Model):
-    __tablename__ = "VenueGenre"
-    artist_id = db.Column(db.Integer, db.ForeignKey("Venue.id", ondelete='CASCADE'), primary_key=True)
-    genre_id = db.Column(db.Integer, db.ForeignKey("Genre.id", ondelete='CASCADE'), primary_key=True)
