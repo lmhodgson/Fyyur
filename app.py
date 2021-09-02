@@ -192,6 +192,7 @@ def show_venue(venue_id):
         past_shows = []
         upcoming_shows = []
 
+        # Uses joined loading (lazy='joined') within relationship in the model
         for show in venue.shows:
             temp_show = {
                 'artist_id': show.artist_id,
@@ -457,6 +458,7 @@ def show_artist(artist_id):
         past_shows = []
         upcoming_shows = []
 
+        # Uses joined loading (lazy='joined') within relationship in the model
         for show in artist.shows:
             temp_show = {
                 'venue_id': show.venue_id,
