@@ -81,9 +81,13 @@
 <script>
 	document.getElementById('btnDeleteVenue').addEventListener('click', (event) => {
 		var venueId = event.currentTarget.dataset['id'];
+		var csrf_token = "{{ csrf_token() }}";
 
 		fetch('/venues/' + venueId, {
-			method: 'DELETE'
+			method: 'DELETE',
+			headers: {
+				'X-CSRFToken': csrf_token
+			}
 		}).then(response => {
 			// If the method returns a 301 response then follow the HTTP redirect response
 			if (response.redirected) {

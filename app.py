@@ -2,7 +2,6 @@
 # Imports
 # ---------------------------------------------------------------------#
 import sys
-import ast
 
 import dateutil.parser
 import babel
@@ -17,6 +16,7 @@ from flask_wtf import CSRFProtect
 from forms import *
 from models import *
 from datetime import datetime
+from enums import Genre
 
 # ---------------------------------------------------------------------#
 # App Config.
@@ -130,7 +130,7 @@ def search_venues():
         result = Venue.query.filter(Venue.name.ilike(f'%{search_term}%')).all()
 
         data = []
-        current_time = datetime.datetime.now()
+        current_time = datetime.now()
 
         for venue in result:
             upcoming_shows = Show.query.filter_by(venue_id=venue.id) \
@@ -187,7 +187,12 @@ def show_venue(venue_id):
         data['upcoming_shows'] = upcoming_shows
         data['past_shows_count'] = len(past_shows)
         data['upcoming_shows_count'] = len(upcoming_shows)
-        data['genres'] = eval(venue.genres) if venue.genres != '' else ''
+
+        genre_list = []
+        for genre in venue.genres:
+            genre_list.append(Genre[genre].value)
+
+        data['genres'] = genre_list
     except:
         error = True
         app.logger.error(sys.exc_info())
@@ -243,7 +248,6 @@ def edit_venue(venue_id):
         venue = Venue.query.get_or_404(venue_id)
 
         form = VenueForm(obj=venue)
-        form.genres.data = ast.literal_eval(form.genres.data)
 
         return render_template('forms/edit_venue.html', form=form, venue=venue)
     except:
@@ -335,7 +339,7 @@ def search_artists():
             .filter(Artist.name.ilike(f'%{search_term}%')).all()
 
         data = []
-        current_time = datetime.datetime.now()
+        current_time = datetime.now()
 
         for artist in artist_results:
             upcoming_shows = Show.query.filter_by(artist_id=artist.id) \
@@ -392,7 +396,12 @@ def show_artist(artist_id):
         data['upcoming_shows'] = upcoming_shows
         data['past_shows_count'] = len(past_shows)
         data['upcoming_shows_count'] = len(upcoming_shows)
-        data['genres'] = eval(artist.genres) if artist.genres != '' else ''
+
+        genre_list = []
+        for genre in artist.genres:
+            genre_list.append(Genre[genre].value)
+
+        data['genres'] = genre_list
 
     except:
         error = True
