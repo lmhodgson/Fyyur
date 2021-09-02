@@ -57,6 +57,11 @@ app.jinja_env.filters['datetime'] = format_datetime
 
 @app.route('/')
 def index():
+    """ Shows the home page.
+
+    Returns: The home view with the 10 most recently listed venues and artists.
+    """
+
     error = False
     recent_venues = []
     recent_artists = []
@@ -86,6 +91,12 @@ def index():
 
 @app.route('/venues')
 def venues():
+    """ Shows the list of venues grouped by city and state.
+
+    Returns: The venues view with the distinct areas. For each area, there will
+        be a list of venues.
+    """
+
     error = False
     response = []
 
@@ -120,6 +131,11 @@ def venues():
 
 @app.route('/venues/search', methods=['POST'])
 def search_venues():
+    """ Searches venues in the database for the user's query.
+
+    Returns: Returns the venues that match the user's search query.
+    """
+
     error = False
     response_data = {}
 
@@ -159,6 +175,14 @@ def search_venues():
 
 @app.route('/venues/<int:venue_id>')
 def show_venue(venue_id):
+    """ Shows the venue details for a specific venue.
+
+    Args:
+        venue_id: The id of the venue that the user has clicked on.
+
+    Returns: Returns the show venue view with the venue data.
+    """
+
     error = False
     data = {}
 
@@ -205,12 +229,23 @@ def show_venue(venue_id):
 
 @app.route('/venues/create', methods=['GET'])
 def create_venue_form():
+    """ Shows the create venue form.
+
+    Returns: Returns the create venue view.
+    """
+
     form = VenueForm()
     return render_template('forms/new_venue.html', form=form)
 
 
 @app.route('/venues/create', methods=['POST'])
 def create_venue_submission():
+    """ Creates a venue within the database if the form submission is valid.
+
+    Returns: Returns the homepage view with a flash indicating whether the
+        creation was a success or failure.
+    """
+
     error = False
 
     form = VenueForm(request.form, meta={'csrf': False})
@@ -244,6 +279,15 @@ def create_venue_submission():
 
 @app.route('/venues/<int:venue_id>/edit', methods=['GET'])
 def edit_venue(venue_id):
+    """ Shows the edit venue form.
+
+    Args:
+        venue_id: The id of the venue that the user wants to update.
+
+    Returns: Returns the edit venue view with the
+        venue details to populate the form.
+    """
+
     try:
         venue = Venue.query.get_or_404(venue_id)
 
@@ -257,6 +301,15 @@ def edit_venue(venue_id):
 
 @app.route('/venues/<int:venue_id>/edit', methods=['POST'])
 def edit_venue_submission(venue_id):
+    """ Updates a venue within the database if the form submission is valid.
+
+    Args:
+        venue_id: The id of the venue that the user wants to update.
+
+    Returns: Returns the show venue view with a flash indicating whether the
+        update was a success or failure.
+    """
+
     error = False
     form = VenueForm(request.form)
 
@@ -290,6 +343,15 @@ def edit_venue_submission(venue_id):
 
 @app.route('/venues/<venue_id>', methods=['DELETE'])
 def delete_venue(venue_id):
+    """ Deletes a venue within the database.
+
+    Args:
+        venue_id: The id of the venue that the user wants to delete.
+
+    Returns: Returns the homepage view with a flash indicating whether the
+        delete was a success or failure.
+    """
+
     error = False
     venue_name = ""
 
@@ -322,12 +384,22 @@ def delete_venue(venue_id):
 
 @app.route('/artists')
 def artists():
+    """ Shows the list of artists.
+
+    Returns: The artists view with a list of all artists.
+    """
+
     artist_data = Artist.query.all()
     return render_template('pages/artists.html', artists=artist_data)
 
 
 @app.route('/artists/search', methods=['POST'])
 def search_artists():
+    """ Searches artists in the database for the user's query.
+
+    Returns: Returns the artists that match the user's search query.
+    """
+
     error = False
     response_data = {}
 
@@ -368,6 +440,14 @@ def search_artists():
 
 @app.route('/artists/<int:artist_id>')
 def show_artist(artist_id):
+    """ Shows the artist details for a specific artist.
+
+    Args:
+        artist_id: The id of the artist that the user has clicked on.
+
+    Returns: Returns the show artist view with the artist data.
+    """
+
     error = False
     data = {}
 
@@ -415,12 +495,23 @@ def show_artist(artist_id):
 
 @app.route('/artists/create', methods=['GET'])
 def create_artist_form():
+    """ Shows the create artist form.
+
+    Returns: Returns the create artist view.
+    """
+
     form = ArtistForm()
     return render_template('forms/new_artist.html', form=form)
 
 
 @app.route('/artists/create', methods=['POST'])
 def create_artist_submission():
+    """ Creates an artist within the database if the form submission is valid.
+
+    Returns: Returns the homepage view with a flash indicating whether the
+        creation was a success or failure.
+    """
+
     error = False
     form = ArtistForm(request.form)
 
@@ -456,6 +547,15 @@ def create_artist_submission():
 
 @app.route('/artists/<int:artist_id>/edit', methods=['GET'])
 def edit_artist(artist_id):
+    """ Shows the edit artist form.
+
+    Args:
+        artist_id: The id of the artist that the user wants to update.
+
+    Returns: Returns the edit artist view with the
+        artist details to populate the form.
+    """
+
     try:
         artist = Artist.query.get_or_404(artist_id)
 
@@ -470,6 +570,15 @@ def edit_artist(artist_id):
 
 @app.route('/artists/<int:artist_id>/edit', methods=['POST'])
 def edit_artist_submission(artist_id):
+    """ Updates an artist within the database if the form submission is valid.
+
+    Args:
+        artist_id: The id of the artist that the user wants to update.
+
+    Returns: Returns the show artist view with a flash indicating whether the
+        update was a success or failure.
+    """
+
     error = False
     form = ArtistForm(request.form)
 
@@ -504,6 +613,15 @@ def edit_artist_submission(artist_id):
 
 @app.route('/artists/<artist_id>', methods=['DELETE'])
 def delete_artist(artist_id):
+    """ Deletes an artist within the database.
+
+    Args:
+        artist_id: The id of the artist that the user wants to delete.
+
+    Returns: Returns the homepage view with a flash indicating whether the
+        delete was a success or failure.
+    """
+
     error = False
     artist_name = ""
 
@@ -536,6 +654,11 @@ def delete_artist(artist_id):
 
 @app.route('/shows')
 def shows():
+    """ Shows the list of shows.
+
+    Returns: The shows view with a list of all shows.
+    """
+
     error = False
     data = []
 
@@ -563,13 +686,23 @@ def shows():
 
 @app.route('/shows/create')
 def create_shows():
-    # renders form. do not touch.
+    """ Shows the create show form.
+
+    Returns: Returns the create show view.
+    """
+
     form = ShowForm()
     return render_template('forms/new_show.html', form=form)
 
 
 @app.route('/shows/create', methods=['POST'])
 def create_show_submission():
+    """ Creates a show within the database if the form submission is valid.
+
+    Returns: Returns the homepage view with a flash indicating whether the
+        creation was a success or failure.
+    """
+
     error = False
     form = ShowForm(request.form)
 
