@@ -1,7 +1,7 @@
 from flask import Blueprint, render_template, request, flash
 
-from forms import *
-from models import *
+from app.forms import *
+from app.models import *
 
 show_bp = Blueprint('shows', __name__, url_prefix='/shows')
 

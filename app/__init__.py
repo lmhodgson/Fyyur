@@ -13,10 +13,10 @@ from logging import Formatter, FileHandler
 
 from flask_wtf import CSRFProtect
 
-from models import *
-from routes.venues import venue_bp
-from routes.artists import artist_bp
-from routes.shows import show_bp
+from app.models import *
+from app.routes.venues import venue_bp
+from app.routes.artists import artist_bp
+from app.routes.shows import show_bp
 
 # ---------------------------------------------------------------------#
 # App Config.
@@ -100,7 +100,7 @@ def server_error(error):
     return render_template('errors/500.html'), 500
 
 
-file_handler = FileHandler('error.log')
+file_handler = FileHandler('../error.log')
 file_handler.setFormatter(
     Formatter('%(asctime)s %(levelname)s: %(message)s [in %(pathname)s:%('
               'lineno)d]')
@@ -109,11 +109,3 @@ app.logger.setLevel(logging.INFO)
 file_handler.setLevel(logging.INFO)
 app.logger.addHandler(file_handler)
 app.logger.info('errors')
-
-# ---------------------------------------------------------------------#
-# Launch.
-# ---------------------------------------------------------------------#
-
-# Default port:
-if __name__ == '__main__':
-    app.run()

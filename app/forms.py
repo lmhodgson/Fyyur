@@ -4,7 +4,7 @@ from wtforms import StringField, SelectField, SelectMultipleField, \
     DateTimeField, BooleanField
 from wtforms.validators import DataRequired, URL
 from wtforms.fields.html5 import TelField
-from enums import Genre, State
+from app.enums import Genre, State
 import re
 
 

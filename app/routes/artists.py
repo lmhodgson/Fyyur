@@ -1,9 +1,7 @@
-import sys
-
 from flask import Blueprint, render_template, request, flash, redirect, url_for
 
-from forms import *
-from models import *
+from app.forms import *
+from app.models import *
 
 artist_bp = Blueprint('artists', __name__, url_prefix='/artists')
 
